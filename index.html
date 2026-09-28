@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Which Molly Tea Drink Are You?</title>
+<style>
+:root{--bg:#fff7ec;--card:#fff;--ink:#3b2a20;--mute:#8a7566;--acc:#e0723a;--line:#f0dfcb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1e1611;--card:#2a1f18;--ink:#f6e9da;--mute:#b39d8a;--acc:#f0925a;--line:#43332a}}
+:root[data-theme="dark"]{--bg:#1e1611;--card:#2a1f18;--ink:#f6e9da;--mute:#b39d8a;--acc:#f0925a;--line:#43332a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS",system-ui,sans-serif;min-height:100vh;display:flex;justify-content:center;padding:20px}
+.wrap{width:100%;max-width:460px;margin:auto}
+.card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:28px 22px;text-align:center;box-shadow:0 8px 0 var(--line)}
+h1{font-family:Georgia,serif;font-size:2rem;margin:8px 0}
+h2{font-family:Georgia,serif;font-size:1.3rem;margin:14px 0 18px}
+p{color:var(--mute);line-height:1.5}
+.big{font-size:4.5rem;line-height:1}
+button{font:inherit;cursor:pointer;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:13px 16px;width:100%;margin:6px 0;text-align:left;transition:transform .1s,border-color .1s}
+button:hover{border-color:var(--acc);transform:translateY(-2px)}
+.go{background:var(--acc);color:#fff;border-color:var(--acc);text-align:center;font-weight:bold;margin-top:16px}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.tags span{background:var(--bg);border:2px solid var(--line);border-radius:20px;padding:4px 12px;font-size:.85rem}
+.small{font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card" id="app"></div></div>
+<script>
+const drinks={
+ jasmine:{e:"🌼",n:"Premium Jasmine Milk Tea",t:["Classic","Refined","Reliable"],d:"The signature. Fragrant jasmine green tea with fresh milk, clean and balanced. You don't need to chase trends, because you're the standard others get compared to. Calm, dependable and quietly elegant."},
+ lapsang:{e:"🧋",n:"Tongmu Lapsang Bubble Tea",t:["Smoky","Cozy","Playful"],d:"Smoky black tea, fresh milk, hazelnut cheese and chewy brown sugar boba. You're warm with a little edge, love contrast and texture, and can turn any hangout into a good story."},
+ champaca:{e:"🌸",n:"White Champaca",t:["Soft","Dreamy","Gentle"],d:"A softer, fruitier floral than jasmine, with an orchid-like lightness. You're the good listener with a rich inner world. Subtle, romantic and easy to love once people slow down."},
+ matcha:{e:"🍵",n:"Premium Jasmine Matcha",t:["Balanced","Grounded","Focused"],d:"Floral jasmine on one side, earthy matcha on the other, with a creamy finish. You're calm and gentle on the surface and driven underneath. You get things done without any drama, and somehow still make time to breathe."},
+ oolong:{e:"🫖",n:"DanCong Oolong Milk Tea",t:["Warm","Thoughtful","Old soul"],d:"Golden and bright, with a long-lingering fragrance and a mellow, roasted depth. You're warm and thoughtful, and you don't need the spotlight. People still remember the conversation they had with you long after they leave the room."}
+};
+const qs=[
+ ["The line at Molly Tea is 20 minutes long. You...",[["Already know your order, it's been planned for weeks","jasmine"],["Strike up a chat with someone in line","oolong"],["Daydream out the window","champaca"],["Skim the menu and head straight for the matcha","matcha"]]],
+ ["Sweetness level?",[["100%, go big","lapsang"],["70%, perfectly balanced","jasmine"],["50%, let the tea speak","champaca"],["Low sugar, I love the roasty depth","oolong"]]],
+ ["Pick a topping:",[["Chewy brown sugar boba","lapsang"],["A layer of matcha cheese foam","matcha"],["Velvety milk foam","champaca"],["More tea, less of everything else","oolong"]]],
+ ["Choose a scent:",[["Fresh jasmine at dusk","jasmine"],["Orchid and soft pear","champaca"],["Fresh tea leaves after rain","matcha"],["Warm honey and toasted wood","oolong"]]],
+ ["Your drink arrives. Photo time?",[["One careful shot in golden-hour light","oolong"],["A neat, well-composed shot of the cup","jasmine"],["A close-up of the boba and hazelnut cream","lapsang"],["One quick snap, then phone down","matcha"]]],
+ ["In your friend group you're...",[["The dependable one","jasmine"],["The entertainer","lapsang"],["The calm, focused one","matcha"],["The group leader","oolong"]]],
+ ["Pick a weekend plan:",[["Tea and a good book","champaca"],["Big brunch with everyone","lapsang"],["A slow walk with a warm cup","oolong"],["A quiet morning walk, then a productive afternoon","matcha"]]],
+ ["Hot or iced?",[["Hot in the morning, iced by afternoon","oolong"],["Hot, in a quiet corner","champaca"],["Iced, no matter the weather","lapsang"],["Hot in cold months, iced in warm ones","jasmine"]]],
+ ["Pick a color:",[["Ivory","jasmine"],["Blush pink","champaca"],["Warm brown","lapsang"],["Matcha green","matcha"]]],
+ ["You take the last sip. You feel...",[["Refreshed, like everything is in its place","jasmine"],["Already planning my next cup","lapsang"],["Dreamy and quiet","champaca"],["Recharged and ready to focus","matcha"],["Grateful for a small good moment","oolong"]]]
+];
+let i=0,score={};
+const app=document.getElementById("app");
+function home(){i=0;score={};app.innerHTML=`<div class="big">🌼</div><h1>Which Molly Tea drink are you?</h1><p>Ten questions to find out which drink on the menu matches your personality.</p><button class="go" onclick="ask()">Start the quiz</button>`}
+function ask(){
+ const [q,a]=qs[i];
+ app.innerHTML=`<div class="bar"><i style="width:${i/qs.length*100}%"></i></div><p class="small">${i+1} / ${qs.length}</p><h2>${q}</h2>`+a.map((x,k)=>`<button onclick="pick('${x[1]}')">${x[0]}</button>`).join("");
+}
+function pick(k){score[k]=(score[k]||0)+1;i++;i<qs.length?ask():result()}
+function result(){
+ const cnt={};qs.forEach(q=>q[1].forEach(o=>cnt[o[1]]=(cnt[o[1]]||0)+1));const adj=k=>score[k]/cnt[k],mx=Math.max(...Object.keys(score).map(adj)),tops=Object.keys(score).filter(k=>Math.abs(adj(k)-mx)<1e-9),top=tops[Math.floor(Math.random()*tops.length)],r=drinks[top];
+ app.innerHTML=`<p class="small">You are...</p><div class="big">${r.e}</div><h1>${r.n}</h1><div class="tags">${r.t.map(t=>`<span>${t}</span>`).join("")}</div><p>${r.d}</p><button class="go" onclick="home()">Take it again</button>`;
+}
+home();
+</script>
+</body>
+</html>
